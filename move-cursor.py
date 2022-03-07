@@ -1,4 +1,4 @@
-import pyautogui, time
+import pyautogui, keyboard
 
 #minimize all windows to make sure right click is happening on the desktop
 pyautogui.keyDown('winleft')
@@ -7,29 +7,27 @@ pyautogui.keyUp('winleft')
 
 #get screen size and calculate mouse positions
 w, h = pyautogui.size()
-width = int(w) - 1
-height = int(h) - 1
-firstPositionX = round(width / 2)
-firstPositionY = round(height / 2)
-secondPositionX = round(width / 4)
-secondPositionY = round(height / 4)
+width, height = int(w), int(h)
+firstPosition = (round(width / 2), round(height / 2))
+secondPosition = (round(width / 4), round(height / 4))
 
-#move cursor and right click to avoid sleep or end script when cursor is moved to bottom-right corner
+#function to terminate script when escape is pressed
+def failSafe():
+    if keyboard.is_pressed('escape'):
+        print('Script terminated by user pressing escape')
+        return True
+
+#move cursor and right-click to avoid sleep or end script escape is pressed
 while True:
-    x, y = pyautogui.position()
-
-    if x != width and y != height:
-        pyautogui.moveTo(firstPositionX, firstPositionY, 2)
+        pyautogui.moveTo(firstPosition[0], firstPosition[1], 1)
+        if failSafe():
+            break
+        pyautogui.click(button='right')        
+        if failSafe():
+            break
+        pyautogui.moveTo(secondPosition[0], secondPosition[1], 1)
+        if failSafe():
+            break
         pyautogui.click(button='right')
-        time.sleep(5)
-    else:
-        break
-    
-    x, y = pyautogui.position()
-
-    if x != width and y != height:
-        pyautogui.moveTo(secondPositionX, secondPositionY, 2)
-        pyautogui.click(button='right')
-        time.sleep(5)
-    else:
-        break
+        if failSafe():
+            break
